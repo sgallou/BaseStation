@@ -76,6 +76,15 @@ Part of DCC++ BASE STATION for the Arduino
   #define DIRECTION_MOTOR_CHANNEL_PIN_A 12
   #define DIRECTION_MOTOR_CHANNEL_PIN_B 13
 
+  #define CURRENT_SAMPLE_MAX            300
+  #define ACK_SAMPLE_THRESHOLD          30      // the threshold that the exponentially-smoothed analogRead samples (after subtracting the baseline current) must cross to establish ACKNOWLEDGEMENT  
+
+  #define ENABLE_PIN_MAIN_LEVEL_ON      HIGH
+  #define ENABLE_PIN_MAIN_LEVEL_OFF     LOW
+  #define ENABLE_PIN_PROG_LEVEL_ON      HIGH
+  #define ENABLE_PIN_PROG_LEVEL_OFF     LOW
+
+
 #elif MOTOR_SHIELD_TYPE == 1
 
   #define MOTOR_SHIELD_NAME "POLOLU MC33926 MOTOR SHIELD"
@@ -88,6 +97,42 @@ Part of DCC++ BASE STATION for the Arduino
 
   #define DIRECTION_MOTOR_CHANNEL_PIN_A 7
   #define DIRECTION_MOTOR_CHANNEL_PIN_B 8
+
+  #define CURRENT_SAMPLE_MAX            300
+  #define ACK_SAMPLE_THRESHOLD          30      // the threshold that the exponentially-smoothed analogRead samples (after subtracting the baseline current) must cross to establish ACKNOWLEDGEMENT  
+
+  #define ENABLE_PIN_MAIN_LEVEL_ON      HIGH
+  #define ENABLE_PIN_MAIN_LEVEL_OFF     LOW
+  #define ENABLE_PIN_PROG_LEVEL_ON      HIGH
+  #define ENABLE_PIN_PROG_LEVEL_OFF     LOW
+
+#elif MOTOR_SHIELD_TYPE == 2
+
+  #define MOTOR_SHIELD_NAME "2 x LMD18200 MOTOR SHIELD"
+
+  #define SIGNAL_ENABLE_PIN_MAIN 3
+  #define SIGNAL_ENABLE_PIN_PROG 11
+
+  #define CURRENT_MONITOR_PIN_MAIN A0
+  #define CURRENT_MONITOR_PIN_PROG A1
+
+  #define DIRECTION_MOTOR_CHANNEL_PIN_A 12
+  #define DIRECTION_MOTOR_CHANNEL_PIN_B 13
+
+  // Max current with LMD18200 is 3A. By security, we accept 2.5A.
+  // ACS712 give 0.185mV/A. Full range (0-1023) is for 0-5V input.
+  // So max current is 0.185 * 2.5 * 1023 / 5 = 94,6275
+  #define  CURRENT_SAMPLE_MAX           95
+
+  // Threshold is defined by DCC specifications as at least 60mA for 60ms. Use 50mA for margin.
+  // ACS712 give 0.185mV/A. Full range (0-1023) is for 0-5V input.
+  // So max current is 0.185 * 0.05 * 1023 / 5 = 1,89255
+  #define  ACK_SAMPLE_THRESHOLD         2
+
+  #define ENABLE_PIN_MAIN_LEVEL_ON      LOW
+  #define ENABLE_PIN_MAIN_LEVEL_OFF     HIGH
+  #define ENABLE_PIN_PROG_LEVEL_ON      LOW
+  #define ENABLE_PIN_PROG_LEVEL_OFF     HIGH
 
 #else
 

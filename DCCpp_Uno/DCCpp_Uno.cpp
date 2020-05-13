@@ -222,6 +222,9 @@ void setup(){
   Serial.begin(115200);            // configure serial interface
   Serial.flush();
 
+  mainMonitor.calibrateCurrentSensor();
+  progMonitor.calibrateCurrentSensor();
+
   #ifdef SDCARD_CS
     pinMode(SDCARD_CS,OUTPUT);
     digitalWrite(SDCARD_CS,HIGH);     // Deselect the SD card
@@ -302,6 +305,7 @@ void setup(){
   OCR1B=DCC_ONE_BIT_PULSE_DURATION_TIMER1;
   
   pinMode(SIGNAL_ENABLE_PIN_MAIN,OUTPUT);   // master enable for motor channel A
+  digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_OFF);
 
   mainRegs.loadPacket(1,RegisterList::idlePacket,2,0);    // load idle packet into register 1    
       
@@ -342,6 +346,7 @@ void setup(){
   OCR0B=DCC_ONE_BIT_PULSE_DURATION_TIMER0;
   
   pinMode(SIGNAL_ENABLE_PIN_PROG,OUTPUT);   // master enable for motor channel B
+  digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_OFF);
 
   progRegs.loadPacket(1,RegisterList::idlePacket,2,0);    // load idle packet into register 1    
       
@@ -424,13 +429,13 @@ void setup(){
 
 #define DCC_SIGNAL(R,N) \
   if(R.currentBit==R.currentReg->activePacket->nBits){    /* IF no more bits in this DCC Packet */ \
-    R.currentBit=0;                                       /*   reset current bit pointer and determine which Register and Packet to process next--- */ \   
+    R.currentBit=0;                                       /*   reset current bit pointer and determine which Register and Packet to process next--- */ \
     if(R.nRepeat>0 && R.currentReg==R.reg){               /*   IF current Register is first Register AND should be repeated */ \
       R.nRepeat--;                                        /*     decrement repeat count; result is this same Packet will be repeated */ \
     } else if(R.nextReg!=NULL){                           /*   ELSE IF another Register has been updated */ \
       R.currentReg=R.nextReg;                             /*     update currentReg to nextReg */ \
       R.nextReg=NULL;                                     /*     reset nextReg to NULL */ \
-      R.tempPacket=R.currentReg->activePacket;            /*     flip active and update Packets */ \        
+      R.tempPacket=R.currentReg->activePacket;            /*     flip active and update Packets */ \
       R.currentReg->activePacket=R.currentReg->updatePacket; \
       R.currentReg->updatePacket=R.tempPacket; \
     } else{                                               /*   ELSE simply move to next Register */ \
@@ -446,8 +451,8 @@ void setup(){
   } else{                                                                              /* ELSE it is a ZERO */ \
     OCR ## N ## A=DCC_ZERO_BIT_TOTAL_DURATION_TIMER ## N;                              /*   set OCRA for timer N to full cycle duration of DCC ZERO bit */ \
     OCR ## N ## B=DCC_ZERO_BIT_PULSE_DURATION_TIMER ## N;                              /*   set OCRB for timer N to half cycle duration of DCC ZERO bit */ \
-  }                                                                                    /* END-ELSE */ \ 
-                                                                                       \ 
+  }                                                                                    /* END-ELSE */ \
+                                                                                       \
   R.currentBit++;                                         /* point to next bit in current Packet */  
   
 ///////////////////////////////////////////////////////////////////////////////

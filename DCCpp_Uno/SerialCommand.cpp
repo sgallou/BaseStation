@@ -308,8 +308,8 @@ void SerialCommand::parse(char *com){
  *    
  *    returns: <p1>
  */    
-     digitalWrite(SIGNAL_ENABLE_PIN_PROG,HIGH);
-     digitalWrite(SIGNAL_ENABLE_PIN_MAIN,HIGH);
+     digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_ON);
+     digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_ON);
      INTERFACE.print("<p1>");
      break;
           
@@ -321,8 +321,8 @@ void SerialCommand::parse(char *com){
  *    
  *    returns: <p0>
  */
-     digitalWrite(SIGNAL_ENABLE_PIN_PROG,LOW);
-     digitalWrite(SIGNAL_ENABLE_PIN_MAIN,LOW);
+     digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_OFF);
+     digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_OFF);
      INTERFACE.print("<p0>");
      break;
 
@@ -349,7 +349,7 @@ void SerialCommand::parse(char *com){
  *    
  *    returns: series of status messages that can be read by an interface to determine status of DCC++ Base Station and important settings
  */
-      if(digitalRead(SIGNAL_ENABLE_PIN_PROG)==LOW)      // could check either PROG or MAIN
+      if(digitalRead(SIGNAL_ENABLE_PIN_PROG)==ENABLE_PIN_PROG_LEVEL_OFF)      // could check either PROG or MAIN
         INTERFACE.print("<p0>");
       else
         INTERFACE.print("<p1>");
