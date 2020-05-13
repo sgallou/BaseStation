@@ -46,6 +46,13 @@ Part of DCC++ BASE STATION for the Arduino
   #define DCC_SIGNAL_PIN_MAIN 12          // Arduino Mega - uses OC1B
   #define DCC_SIGNAL_PIN_PROG 2           // Arduino Mega - uses OC3B
 
+#elif defined  ARDUINO_AVR_NANO
+
+  #define ARDUINO_TYPE    "NANO"
+
+  #define DCC_SIGNAL_PIN_MAIN 10          // Arduino Nano - uses OC1B
+  #define DCC_SIGNAL_PIN_PROG 5           // Arduino Nano - uses OC0B
+
 #else
 
   #error CANNOT COMPILE - DCC++ ONLY WORKS WITH AN ARDUINO UNO OR AN ARDUINO MEGA 1280/2560
