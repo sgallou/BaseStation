@@ -120,12 +120,12 @@ Part of DCC++ BASE STATION for the Arduino
   #define DIRECTION_MOTOR_CHANNEL_PIN_B 13
 
   // Max current with LMD18200 is 3A. By security, we accept 2.5A.
-  // ACS712 give 0.185mV/A. Full range (0-1023) is for 0-5V input.
+  // ACS712 give 0.185V/A. Full range (0-1023) is for 0-5V input.
   // So max current is 0.185 * 2.5 * 1023 / 5 = 94,6275
   #define  CURRENT_SAMPLE_MAX           95
 
   // Threshold is defined by DCC specifications as at least 60mA for 60ms. Use 50mA for margin.
-  // ACS712 give 0.185mV/A. Full range (0-1023) is for 0-5V input.
+  // ACS712 give 0.185V/A. Full range (0-1023) is for 0-5V input.
   // So max current is 0.185 * 0.05 * 1023 / 5 = 1,89255
   #define  ACK_SAMPLE_THRESHOLD         2
 
