@@ -309,8 +309,14 @@ void SerialCommand::parse(char *com){
  *    returns: <p1>
  */    
      digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_ON);
+     digitalWrite(DCC_SIGNAL_PIN_PROG, HIGH);
      digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_ON);
      INTERFACE.print("<p1>");
+
+while(true){
+      float raw = analogRead(CURRENT_MONITOR_PIN_PROG);
+      Serial.println(raw);
+}
      break;
           
 /***** TURN OFF POWER FROM MOTOR SHIELD TO TRACKS  ****/    

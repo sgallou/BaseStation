@@ -294,8 +294,8 @@ void setup(){
   bitSet(TCCR1B,WGM12);
   bitSet(TCCR1B,WGM13);
 
-  bitSet(TCCR1A,COM1B1);    // set Timer 1, OC1B (pin 10/UNO, pin 12/MEGA) to inverting toggle (actual direction is arbitrary)
-  bitSet(TCCR1A,COM1B0);
+  // bitSet(TCCR1A,COM1B1);    // set Timer 1, OC1B (pin 10/UNO, pin 12/MEGA) to inverting toggle (actual direction is arbitrary)
+  // bitSet(TCCR1A,COM1B0);
 
   bitClear(TCCR1B,CS12);    // set Timer 1 prescale=1
   bitClear(TCCR1B,CS11);

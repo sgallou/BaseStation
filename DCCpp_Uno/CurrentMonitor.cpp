@@ -47,6 +47,7 @@ void CurrentMonitor::calibrateCurrentSensor(){
   }
   while (--loop);
   currentRef /= 100;
+  Serial.println(currentRef);
 #endif
 }
   

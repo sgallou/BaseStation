@@ -131,8 +131,8 @@ Part of DCC++ BASE STATION for the Arduino
 
   #define ENABLE_PIN_MAIN_LEVEL_ON      LOW
   #define ENABLE_PIN_MAIN_LEVEL_OFF     HIGH
-  #define ENABLE_PIN_PROG_LEVEL_ON      LOW
-  #define ENABLE_PIN_PROG_LEVEL_OFF     HIGH
+  #define ENABLE_PIN_PROG_LEVEL_ON      HIGH
+  #define ENABLE_PIN_PROG_LEVEL_OFF     LOW
 
 #else
 
