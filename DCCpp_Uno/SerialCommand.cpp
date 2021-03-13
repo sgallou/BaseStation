@@ -336,7 +336,7 @@ void SerialCommand::parse(char *com){
  *    where CURRENT = 0-1024, based on exponentially-smoothed weighting scheme
  */
       INTERFACE.print("<a");
-      INTERFACE.print(int(mMonitor->current));
+      INTERFACE.print((int)(mMonitor->load() * 1024));
       INTERFACE.print(">");
       break;
 

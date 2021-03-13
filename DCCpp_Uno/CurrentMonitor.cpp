@@ -59,12 +59,20 @@ boolean CurrentMonitor::checkTime(){
   
 void CurrentMonitor::check(){
   current=abs(analogRead(pin) - currentRef)*CURRENT_SAMPLE_SMOOTHING+current*(1.0-CURRENT_SAMPLE_SMOOTHING);        // compute new exponentially-smoothed current
-  if(current>CURRENT_SAMPLE_MAX && digitalRead(SIGNAL_ENABLE_PIN_PROG)==ENABLE_PIN_PROG_LEVEL_ON){                    // current overload and Prog Signal is on (or could have checked Main Signal, since both are always on or off together)
+  if(current>CURRENT_SAMPLE_MAX){                    // current overload and Prog Signal is on (or could have checked Main Signal, since both are always on or off together)
     digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_OFF);                               // disable both Motor Shield Channels
     digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_OFF);                               // regardless of which caused current overload
     INTERFACE.print(msg);                                                                            // print corresponding error message
   }    
 } // CurrentMonitor::check  
+
+float CurrentMonitor::load()
+{
+  if (current >= CURRENT_SAMPLE_MAX)
+    return 1.0;
+  return current / CURRENT_SAMPLE_MAX;
+}
+
 
 long int CurrentMonitor::sampleTime=0;
 
