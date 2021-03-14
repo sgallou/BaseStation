@@ -23,7 +23,7 @@ Part of DCC++ BASE STATION for the Arduino
 class CurrentMonitor
 {
 public:
-  CurrentMonitor(int, const char *);
+  CurrentMonitor(int pin, int faultPin, const char *msg);
   void calibrateCurrentSensor();
   static boolean checkTime();
   void check();
@@ -32,6 +32,7 @@ public:
 private:
   static long int sampleTime;
   int pin;
+  int faultPin;
   float current;
   float currentRef = 0.0;
   const char *msg;
