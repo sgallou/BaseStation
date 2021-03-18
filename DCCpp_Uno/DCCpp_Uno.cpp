@@ -177,6 +177,7 @@ DCC++ BASE STATION is configured through the Config.h file that contains all use
 #include "EEStore.h"
 #include "Config.h"
 #include "Comm.h"
+#include "PowerManager.h"
 
 void showConfiguration();
 
@@ -196,6 +197,13 @@ volatile RegisterList progRegs(2);                     // create a shorter list 
 CurrentMonitor mainMonitor(CURRENT_MONITOR_PIN_MAIN, DRIVER_FAULT_PIN_MAIN, "<p2>");  // create monitor for current on Main Track
 CurrentMonitor progMonitor(CURRENT_MONITOR_PIN_PROG, DRIVER_FAULT_PIN_PROG,"<p3>");  // create monitor for current on Program Track
 
+PowerManager powerManager(POWER_MANAGER_NOT_ALIVE_PIN,
+                          POWER_MANAGER_WAKEUP_PIN,
+                          POWER_MANAGER_LED_PIN,
+                          POWER_MANAGER_REBOOT_PIN,
+                          POWER_STARTUP_MIN_DURATION_SECONDS,
+                          POWER_SHUTDOWN_MIN_DURATION_SECONDS);
+
 ///////////////////////////////////////////////////////////////////////////////
 // MAIN ARDUINO LOOP
 ///////////////////////////////////////////////////////////////////////////////
@@ -210,7 +218,15 @@ void loop(){
   }
 
   Sensor::check();    // check sensors for activate/de-activate
-  
+
+  if (powerManager.stopAsked())
+  {
+    // Shutdown, signal stop and halt
+    digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_OFF);
+    digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_OFF);
+    INTERFACE.print("<p0>");
+    powerManager.shutdown();
+  }
 } // loop
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -229,6 +245,8 @@ void setup(){
     pinMode(SDCARD_CS,OUTPUT);
     digitalWrite(SDCARD_CS,HIGH);     // Deselect the SD card
   #endif
+
+  powerManager.waitForInit();
 
   EEStore::init();                                          // initialize and load Turnout and Sensor definitions stored in EEPROM
 
