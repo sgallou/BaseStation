@@ -18,8 +18,8 @@ Part of DCC++ BASE STATION for the Arduino
 struct SerialCommand{
   static char commandString[MAX_COMMAND_LENGTH+1];
   static volatile RegisterList *mRegs, *pRegs;
-  static CurrentMonitor *mMonitor;
-  static void init(volatile RegisterList *, volatile RegisterList *, CurrentMonitor *);
+  static CurrentMonitor *mMonitor, *pMonitor;
+  static void init(volatile RegisterList *, volatile RegisterList *, CurrentMonitor *, CurrentMonitor *);
   static void parse(char *);
   static void process();
 }; // SerialCommand

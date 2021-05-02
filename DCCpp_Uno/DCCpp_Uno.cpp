@@ -178,6 +178,7 @@ DCC++ BASE STATION is configured through the Config.h file that contains all use
 #include "Config.h"
 #include "Comm.h"
 #include "PowerManager.h"
+#include "NoPowerManager.h"
 
 void showConfiguration();
 
@@ -195,7 +196,7 @@ volatile RegisterList mainRegs(MAX_MAIN_REGISTERS);    // create list of registe
 volatile RegisterList progRegs(2);                     // create a shorter list of only two registers for Program Track Packets
 
 CurrentMonitor mainMonitor(CURRENT_MONITOR_PIN_MAIN, DRIVER_FAULT_PIN_MAIN, "<p2>");  // create monitor for current on Main Track
-CurrentMonitor progMonitor(CURRENT_MONITOR_PIN_PROG, DRIVER_FAULT_PIN_PROG,"<p3>");  // create monitor for current on Program Track
+CurrentMonitor progMonitor(CURRENT_MONITOR_PIN_PROG, DRIVER_FAULT_PIN_PROG, "<p3>");  // create monitor for current on Program Track
 
 PowerManager powerManager(POWER_MANAGER_NOT_ALIVE_PIN,
                           POWER_MANAGER_WAKEUP_PIN,
@@ -203,6 +204,7 @@ PowerManager powerManager(POWER_MANAGER_NOT_ALIVE_PIN,
                           POWER_MANAGER_REBOOT_PIN,
                           POWER_STARTUP_MIN_DURATION_SECONDS,
                           POWER_SHUTDOWN_MIN_DURATION_SECONDS);
+// NoPowerManager powerManager;
 
 ///////////////////////////////////////////////////////////////////////////////
 // MAIN ARDUINO LOOP
@@ -265,6 +267,12 @@ void setup(){
   Serial.print(__DATE__);
   Serial.print(" ");
   Serial.print(__TIME__);
+  Serial.print(" / ");
+  Serial.print("Iref(MAIN)=");
+  Serial.print(mainMonitor.currentRefValue());
+  Serial.print(" / ");
+  Serial.print("Iref(PROG)=");
+  Serial.print(progMonitor.currentRefValue());
   Serial.print(">");
 
   #if COMM_TYPE == 1
@@ -276,7 +284,7 @@ void setup(){
     INTERFACE.begin();
   #endif
              
-  SerialCommand::init(&mainRegs, &progRegs, &mainMonitor);   // create structure to read and parse commands from serial line
+  SerialCommand::init(&mainRegs, &progRegs, &mainMonitor, &progMonitor);   // create structure to read and parse commands from serial line
 
   Serial.print("<N");
   Serial.print(COMM_TYPE);

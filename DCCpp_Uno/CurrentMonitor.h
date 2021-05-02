@@ -25,9 +25,11 @@ class CurrentMonitor
 public:
   CurrentMonitor(int pin, int faultPin, const char *msg);
   void calibrateCurrentSensor();
+  float currentRefValue();
   static boolean checkTime();
   void check();
   float load();
+  void resetErrorState();
 
 private:
   static long int sampleTime;
@@ -36,6 +38,7 @@ private:
   float current;
   float currentRef = 0.0;
   const char *msg;
+  bool errorState = false;
 };
 
 #endif

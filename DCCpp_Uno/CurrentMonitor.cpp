@@ -40,6 +40,8 @@ void CurrentMonitor::calibrateCurrentSensor()
   digitalWrite(SIGNAL_ENABLE_PIN_MAIN, ENABLE_PIN_MAIN_LEVEL_ON);
   pinMode(pin, INPUT);
 
+  //TODO gérer un anti-couillon (seuils), si la station est mise sous tension alors que le réseau est déjà en court-circuit
+
   // Calibration
   currentRef = 0.0;
   int loop = 100;
@@ -50,6 +52,11 @@ void CurrentMonitor::calibrateCurrentSensor()
   } while (--loop);
   currentRef /= 100;
 #endif
+}
+
+float CurrentMonitor::currentRefValue()
+{
+  return currentRef;
 }
 
 boolean CurrentMonitor::checkTime()
@@ -63,19 +70,23 @@ boolean CurrentMonitor::checkTime()
 void CurrentMonitor::check()
 {
   current = abs(analogRead(pin) - currentRef) * CURRENT_SAMPLE_SMOOTHING + current * (1.0 - CURRENT_SAMPLE_SMOOTHING); // compute new exponentially-smoothed current
-  if (current > CURRENT_SAMPLE_MAX)
-  {                                                                  // current overload and Prog Signal is on (or could have checked Main Signal, since both are always on or off together)
-    digitalWrite(SIGNAL_ENABLE_PIN_PROG, ENABLE_PIN_PROG_LEVEL_OFF); // disable both Motor Shield Channels
-    digitalWrite(SIGNAL_ENABLE_PIN_MAIN, ENABLE_PIN_MAIN_LEVEL_OFF); // regardless of which caused current overload
-    INTERFACE.print(msg);                                            // print corresponding error message
-  }
-  if (digitalRead(faultPin) == LOW)
+  if (current > CURRENT_SAMPLE_MAX || digitalRead(faultPin) == LOW)
   {
     digitalWrite(SIGNAL_ENABLE_PIN_PROG, ENABLE_PIN_PROG_LEVEL_OFF); // disable both Motor Shield Channels
-    digitalWrite(SIGNAL_ENABLE_PIN_MAIN, ENABLE_PIN_MAIN_LEVEL_OFF); // regardless of which fault occured
+    digitalWrite(SIGNAL_ENABLE_PIN_MAIN, ENABLE_PIN_MAIN_LEVEL_OFF); // regardless of which caused current overload
+
+    if (errorState)
+      return; // Already signaled
+    errorState = true;
+    
     INTERFACE.print(msg);                                            // print corresponding error message
   }
 } // CurrentMonitor::check
+
+void CurrentMonitor::resetErrorState()
+{
+  errorState = false;
+}
 
 float CurrentMonitor::load()
 {

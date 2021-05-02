@@ -30,13 +30,15 @@ char SerialCommand::commandString[MAX_COMMAND_LENGTH+1];
 volatile RegisterList *SerialCommand::mRegs;
 volatile RegisterList *SerialCommand::pRegs;
 CurrentMonitor *SerialCommand::mMonitor;
+CurrentMonitor *SerialCommand::pMonitor;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SerialCommand::init(volatile RegisterList *_mRegs, volatile RegisterList *_pRegs, CurrentMonitor *_mMonitor){
+void SerialCommand::init(volatile RegisterList *_mRegs, volatile RegisterList *_pRegs, CurrentMonitor *_mMonitor, CurrentMonitor *_pMonitor){
   mRegs=_mRegs;
   pRegs=_pRegs;
   mMonitor=_mMonitor;
+  pMonitor=_pMonitor;
   sprintf(commandString,"");
 } // SerialCommand:SerialCommand
 
@@ -308,6 +310,8 @@ void SerialCommand::parse(char *com){
  *    
  *    returns: <p1>
  */    
+     mMonitor->resetErrorState();
+     pMonitor->resetErrorState();
      digitalWrite(SIGNAL_ENABLE_PIN_PROG,ENABLE_PIN_PROG_LEVEL_ON);
      digitalWrite(SIGNAL_ENABLE_PIN_MAIN,ENABLE_PIN_MAIN_LEVEL_ON);
      INTERFACE.print("<p1>");
